@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model User {
+  id String @id
+  password String
+  nickname String @unique
+  type String
+  todos Todo[]
+}
+
+model Category {
+  no String @id
+  name String
+  todos Todo[]
+}
+
+model Todo {
+  no String @id
+  category Category @relation(fields: [categoryId], references: [no])
+  categoryId  String
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  state Int @default(0)
+  createdAt DateTime @default(now())
+}
