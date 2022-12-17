@@ -17,13 +17,11 @@ type LoginResponse = {
 }
 
 const handler: NextApiHandler<LoginResponse> = async (req, res) => {
-  const { form } = req.body as { form: UserForm };
+  const form = req.body as UserForm;
   
   switch (req.method) {
     case 'POST':
       return authenticate();
-      
-      break;
     default:
       return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
@@ -34,7 +32,7 @@ const handler: NextApiHandler<LoginResponse> = async (req, res) => {
         id: form.id,
       },
     });
-
+    
     if (user?.password !== form.password) {
       throw '아이디 또는 비밀번호가 일치하지 않습니다.';
     }
@@ -52,7 +50,7 @@ const handler: NextApiHandler<LoginResponse> = async (req, res) => {
         token
       });
     } catch (err) {
-      throw (err as Error).message;
+      throw '문제가 발생하였습니다. 잠시 후 다시 이용해주시기 바랍니다.';
     }
   }
 };
