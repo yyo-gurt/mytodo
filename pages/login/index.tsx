@@ -1,11 +1,9 @@
-import { User } from '@prisma/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { setToken } from '../../services';
 import * as loginAPI from '../../services/login.api';
-import { useAppDispatch } from '../../store';
-import { login } from '../../store/user.slice';
 import { ResponseError } from '../../types/common';
 import { UserForm, UserResponse } from '../../types/user';
 import styles from './login.module.scss'
@@ -15,8 +13,8 @@ const Login = () => {
   const router = useRouter();
 
   const loginMutation = useMutation(
-    async (param: UserForm) => {
-      return loginAPI.login();
+    (param: UserForm) => {
+      return loginAPI.login(param);
     },
     {
       onError(response: ResponseError) {
@@ -25,7 +23,7 @@ const Login = () => {
         if (response.message)
           alert(response.message);
       },
-      onSuccess(response:UserResponse) {
+      onSuccess(response: UserResponse) {
         console.log("success");
         console.log(response);
         queryClient.setQueryData(["user"], response.user);
@@ -42,9 +40,9 @@ const Login = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm({ 
-      ...form, 
-      [name]: value 
+    setForm({
+      ...form,
+      [name]: value
     });
   };
 
@@ -61,11 +59,36 @@ const Login = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="id" value={form.id} onChange={handleChange} placeholder='아이디' />
-        <input type="password" name="password" value={form.password} onChange={handleChange} placeholder='비밀번호' />
-        <button type="submit">LOGIN</button>
-      </form>
+      <section id={styles.section} className={styles.login}>
+        <div className={styles.container}>
+          <div className={styles.login_wrap}>
+            <h2>로그인</h2>
+            <div className={styles.login_area}>
+              <form onSubmit={handleSubmit}>
+                <div>
+                  <span>아이디</span>
+                  <input type="text" name="id" value={form.id} onChange={handleChange} placeholder='아이디' />
+                </div>
+                <div>
+                  <span>비밀번호</span>
+                  <input type="password" name="password" value={form.password} onChange={handleChange} placeholder='비밀번호' />
+                </div>
+                <input type="submit" value="로그인" />
+              </form>
+            </div>
+            <ul className={styles.find_area}>
+              <li>아이디 찾기</li>
+              <li>비밀번호 찾기</li>
+            </ul>
+            <ul className={styles.sns_area}>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
+            <p className={styles.join_area}>처음 방문하셨나요?<Link href="/join" className={styles.joinBtn}>회원가입</Link></p>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
