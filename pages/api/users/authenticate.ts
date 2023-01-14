@@ -38,8 +38,8 @@ const handler: NextApiHandler<LoginResponse> = async (req, res) => {
     }
 
     try {
-      const token = jwt.sign(user, serverRuntimeConfig.secret, { expiresIn: ACCESS_TOKEN_EXPIRED });
-      const refreshToken = jwt.sign(user, serverRuntimeConfig.refresh, { expiresIn: REFRESH_TOKEN_EXPIRED });
+      const token = jwt.sign({ id: user.id }, serverRuntimeConfig.secret, { expiresIn: ACCESS_TOKEN_EXPIRED });
+      const refreshToken = jwt.sign({ id: user.id }, serverRuntimeConfig.refresh, { expiresIn: REFRESH_TOKEN_EXPIRED });
 
       res.setHeader('Set-Cookie', `token=${refreshToken}; path=/;`)
       res.status(200).json({
