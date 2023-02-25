@@ -36,7 +36,8 @@ const handler: NextApiHandler = (req, res) => {
       data: {
         id,
         nickname,
-        password
+        password,
+        type: "0"
       }
     });
 

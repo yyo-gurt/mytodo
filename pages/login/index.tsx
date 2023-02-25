@@ -1,12 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { setToken } from '../../services';
-import * as loginAPI from '../../services/login.api';
-import { ResponseError } from '../../types/common';
-import { UserForm, UserResponse } from '../../types/user';
-import styles from './login.module.scss'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { setToken } from "../../services";
+import * as loginAPI from "../../services/auth.api";
+import { ResponseError } from "../../types/common";
+import { UserForm, UserResponse } from "../../types/user";
+import styles from "./login.module.scss";
 
 const Login = () => {
   const queryClient = useQueryClient();
@@ -18,44 +18,37 @@ const Login = () => {
     },
     {
       onError(response: ResponseError) {
-        console.log("error");
-        console.log(response);
-        if (response.message)
-          alert(response.message);
+        if (response.message) alert(response.message);
       },
       onSuccess(response: UserResponse) {
-        console.log("success");
-        console.log(response);
         queryClient.setQueryData(["user"], response.user);
         setToken(response.token);
         router.push("/");
-      }
+      },
     }
   );
 
   const [form, setForm] = useState<UserForm>({
     id: "",
-    password: ""
+    password: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({
       ...form,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.id)
-      return alert("아이디를 입력하세요.");
-    else if (!form.password)
-      return alert("비밀번호를 입력하세요.");
+    if (!form.id) return alert("아이디를 입력하세요.");
+    else if (!form.password) return alert("비밀번호를 입력하세요.");
 
     loginMutation.mutate(form);
-  }
+  };
 
   return (
     <>
@@ -67,11 +60,11 @@ const Login = () => {
               <form onSubmit={handleSubmit}>
                 <div>
                   <span>아이디</span>
-                  <input type="text" name="id" value={form.id} onChange={handleChange} placeholder='아이디' />
+                  <input type="text" name="id" value={form.id} onChange={handleChange} placeholder="아이디" />
                 </div>
                 <div>
                   <span>비밀번호</span>
-                  <input type="password" name="password" value={form.password} onChange={handleChange} placeholder='비밀번호' />
+                  <input type="password" name="password" value={form.password} onChange={handleChange} placeholder="비밀번호" />
                 </div>
                 <input type="submit" value="로그인" />
               </form>
@@ -85,12 +78,17 @@ const Login = () => {
               <li></li>
               <li></li>
             </ul>
-            <p className={styles.join_area}>처음 방문하셨나요?<Link href="/join" className={styles.joinBtn}>회원가입</Link></p>
+            <p className={styles.join_area}>
+              처음 방문하셨나요?
+              <Link href="/join" className={styles.joinBtn}>
+                회원가입
+              </Link>
+            </p>
           </div>
         </div>
       </section>
     </>
   );
-}
+};
 
 export default Login;
