@@ -1,11 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import * as joinAPI from "../../services/auth.api";
-import { JoinForm, UserResponse } from "types/user";
+import { JoinForm } from "types/user";
 import styles from "./join.module.scss";
 import { ResponseError } from "types/common";
-import { setToken } from "services";
 
 type CheckInput = {
   [key in keyof JoinForm]: boolean;
@@ -16,7 +15,6 @@ type CheckInput = {
 };
 
 const Join = () => {
-  const queryClient = useQueryClient();
   const router = useRouter();
 
   const joinMutation = useMutation(
@@ -25,8 +23,6 @@ const Join = () => {
     },
     {
       onError(response: ResponseError) {
-        console.log("error");
-        console.log(response);
         if (response.message) alert(response.message);
       },
       onSuccess() {
@@ -43,12 +39,12 @@ const Join = () => {
       onSuccess(response: boolean) {
         if (response) {
           alert("사용 가능한 아이디입니다.");
-        } else {
-          alert("사용 불가능한 아이디입니다.");
         }
         setCheckDuplicate(response);
       },
-      onError() {},
+      onError(error: Error) {
+        alert(error.message);
+      },
     }
   );
 
@@ -91,6 +87,10 @@ const Join = () => {
     idCheck.idReg = !/^[a-zA-Z\d]{4,12}$/g.test(form.id);
 
     setCheckInput({ ...checkInput, ...idCheck });
+
+    if (idCheck.id || idCheck.idReg) return;
+
+    duplicateMutaion.mutate(form.id);
   }, [checkInput, form]);
 
   const handleSubmit = (e: React.FormEvent) => {

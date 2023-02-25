@@ -21,8 +21,8 @@ const Login = () => {
         if (response.message) alert(response.message);
       },
       onSuccess(response: UserResponse) {
-        queryClient.setQueryData(["user"], response.user);
         setToken(response.token);
+        queryClient.setQueryData(["user"], response);
         router.push("/");
       },
     }

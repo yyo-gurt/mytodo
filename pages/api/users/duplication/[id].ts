@@ -1,11 +1,12 @@
 import prisma from "lib/prisma";
 import { NextApiHandler } from "next";
 import JoinFormError, { JoinErrorCode } from "errors/user/JoinFormError";
+import apiHandler from "helpers/api/api-handler";
 
 const handler: NextApiHandler = (req, res) => {
   switch (req.method) {
     case 'GET':
-      checkId();
+      return checkId();
     default:
       return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
@@ -23,8 +24,8 @@ const handler: NextApiHandler = (req, res) => {
       throw new JoinFormError('중복된 이이디입니다.', JoinErrorCode.DUPLICATED_ID); 
     }
 
-    res.status(200).send('success');
+    res.status(200).send(true);
   }
 };
 
-export default handler;
+export default apiHandler(handler);

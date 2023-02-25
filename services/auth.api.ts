@@ -8,11 +8,9 @@ export const login = (param: UserForm): Promise<UserResponse> => {
       "Content-Type": "application/json",
     },
   }).then(async (UserResponse) => {
+    if (!UserResponse.ok) throw new Error("로그인에 실패했습니다.");
     const response = await UserResponse.json();
-
-    if (UserResponse.ok) return response;
-
-    throw response;
+    return response;
   });
 
   // return Promise.resolve({
@@ -37,13 +35,14 @@ export const join = (param: JoinForm): Promise<void> => {
   }).then(async (UserResponse) => {});
 };
 
-export const userInfo = (): Promise<UserResponse> => {
-  return fetch("api/users/user", {
+export const userInfo = (token: string): Promise<UserResponse> => {
+  return fetch(`api/users/user?token=${token}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   }).then((response) => {
+    if (!response.ok) throw new Error("로그인에 실패했습니다.");
     return response.json();
   });
 };
@@ -61,6 +60,8 @@ export const duplicateID = (param: string):Promise<boolean> => {
       "Content-Type": "application/json",
     },
   }).then((response) => {
+    if (!response.ok)
+      throw new Error("사용 불가능한 아이디입니다.");
     return response.json();
   });
 };

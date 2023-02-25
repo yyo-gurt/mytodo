@@ -17,7 +17,7 @@ export const jwtMiddleware = async <Request extends NextApiRequest, Response>(re
     secret: serverRuntimeConfig.secret,
     algorithms: ['HS256']
   }).unless({
-    path: ['/api/users/authenticate']
+    path: ['/api/users/authenticate', '/api/users/user']
   });
 
   util.promisify(middleware)(req, res);
