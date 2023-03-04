@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getToken, setToken } from "services";
 import { userInfo } from "services/auth.api";
-import { UserResponse } from "types/user";
 
 export default function useUserInfo() {
   const { data, isFetched } = useQuery({

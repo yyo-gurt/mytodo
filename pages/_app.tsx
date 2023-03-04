@@ -7,6 +7,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import Layout from "components/layout/layout";
+import Auth from "components/auth";
 
 if (process.env.NODE_ENV === "development") {
   if (typeof window === undefined) {
@@ -26,9 +27,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Auth>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </Auth>
         <ReactQueryDevtools></ReactQueryDevtools>
       </QueryClientProvider>
     </Provider>
